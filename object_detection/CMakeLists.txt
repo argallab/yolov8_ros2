@@ -47,6 +47,7 @@ ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
   scripts/yolov8_ip_camera.py
   scripts/yolov8_realsense.py
+  scripts/yolov8_luci.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
