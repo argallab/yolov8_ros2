@@ -20,6 +20,9 @@
   <depend>OpenCV</depend>
   <depend>nlohmann_json</depend>
   <depend>object_detection_interfaces</depend>
+  <depend>perception_pcl</depend>
+  <depend>pcl_conversions</depend>
+  <depend>pcl_1.10</depend>
 
   <exec_depend>rclpy</exec_depend>
   <exec_depend>ros2launch</exec_depend>

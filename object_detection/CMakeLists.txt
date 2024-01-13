@@ -5,6 +5,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(CMAKE_CXX_STANDARD 17)
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
@@ -16,11 +18,19 @@ find_package(ament_index_cpp REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(object_detection_interfaces REQUIRED)
+find_package(perception_pcl REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(PCL 1.10 REQUIRED)
 
 include_directories(SYSTEM 
   ${OpenCV_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS}
+  include
 )
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
 
+## IP CAMERA PUBLISHER
 add_executable(ip_camera_publisher src/ip_camera_publisher.cpp)
 
 ament_target_dependencies(ip_camera_publisher
@@ -33,8 +43,19 @@ target_link_libraries(ip_camera_publisher
   ${OpenCV_LIBRARIES}
   nlohmann_json::nlohmann_json)
 
+## POINTCLOUD FILTER SERVICE SERVER
+add_executable(pointcloud_filter_srv
+  src/pointcloud_filter_node.cpp src/pointcloud_filter_srv.cpp)
+target_link_libraries(pointcloud_filter_srv
+  # ${Boost_SYSTEM_LIBRARY}
+  ${PCL_LIBRARIES}
+)
+ament_target_dependencies(pointcloud_filter_srv
+  rclcpp sensor_msgs pcl_conversions PCL object_detection_interfaces)
+
 install(TARGETS
   ip_camera_publisher
+  pointcloud_filter_srv
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY
